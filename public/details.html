@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dustbin Details - BinWatch</title>
+    <link rel="stylesheet" href="css/iot.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="css/details.css">
+    
+   <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCdHL76fpx2JfFEP79zNkk_ty9CJn8ftFg&callback=initMap" async defer></script>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="header-content">
+                <div class="logo">
+                    <i class="fas fa-trash-alt" aria-hidden="true"></i>
+                    <h1>BinWatch - Smart Dustbin Monitoring System</h1>
+                </div>
+                <div class="user-info">
+                    <img src="https://ui-avatars.com/api/?name=User&background=0D8ABC&color=fff" alt="User Avatar">
+                    <span id="user-email-display">Loading...</span>
+                    <a href="#" id="logout-link">Logout</a>
+                </div>
+            </div>
+        </header>
+
+        <main>
+            <a href="index.html" class="back-link">&larr; Back to Dashboard</a>
+            
+            <h2 id="bin-name-title">Loading...</h2>
+            
+            <div class="details-grid">
+                <div class="card" id="details-map-card">
+                    <div id="map"></div>
+                </div>
+                
+                <!-- ... existing code ... -->
+                <div class="card" id="details-info-card">
+                    <h3>Device Details</h3>
+                    <ul class="info-list">
+<!-- ... existing code ... -->
+                            <i class="fas fa-id-badge" aria-hidden="true"></i>
+                            <strong>Device ID:</strong>
+                            <span id="detail-id">...</span>
+                        </li>
+                        <li>
+                            <i class="fas fa-battery-three-quarters" aria-hidden="true"></i>
+                            <strong>Status:</strong>
+                            <span id="detail-status">...</span>
+                        </li>
+                        <!-- NEW: Added Distance Item -->
+                        <li>
+                            <i class="fas fa-ruler-vertical" aria-hidden="true"></i>
+                            <strong>Distance:</strong>
+                            <span id="detail-distance">...</span>
+                        </li>
+                        <li>
+                            <i class="fas fa-map-marker-alt" aria-hidden="true"></i>
+<!-- ... existing code ... -->
+                            <strong>Coordinates:</strong>
+                            <span id="detail-coords">...</span>
+                        </li>
+                        <li>
+<!-- ... existing code ... -->
+                            <i class="fas fa-clock" aria-hidden="true"></i>
+                            <strong>Last Update:</strong>
+                            <span id="detail-update">...</span>
+<!-- ... existing code ... -->
+                        </li>
+                    </ul>
+                    
+                    <button class="auth-button delete-button" id="delete-button">
+                        <i class="fas fa-trash-alt" aria-hidden="true"></i> Delete This Dustbin
+                    </button>
+                </div>
+            </div>
+        </main>
+
+        <footer>
+            <p>BinWatch &copy; 2026 | Smart Dustbin Monitoring System</p>
+            <p style="font-size: 0.8rem; margin-top: 5px; color: var(--gray);">Powered by <strong>Ares</strong></p>
+        </footer>
+    </div>
+    
+    <script src="js/details.js"></script>
+</body>
+</html>

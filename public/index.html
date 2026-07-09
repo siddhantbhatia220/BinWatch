@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BinWatch - Smart Dustbin Monitoring System</title>
+    <link rel="stylesheet" href="css/iot.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCdHL76fpx2JfFEP79zNkk_ty9CJn8ftFg&callback=initMap" async defer></script>
+   
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="header-content">
+                <div class="logo">
+                    <i class="fas fa-trash-alt" aria-hidden="true"></i>
+                    <h1>BinWatch - Smart Dustbin Monitoring System </h1>
+                </div>
+                
+                <div class="user-info">
+                    <img src="https://ui-avatars.com/api/?name=User&background=0D8ABC&color=fff" alt="User Avatar">
+                    <span id="user-email-display">Loading...</span>
+                    <a href="change_password.html" id="change-password-link" style="color: white; text-decoration: none; font-size: 0.9rem; margin-left: 15px; padding: 5px 10px; border: 1px solid white; border-radius: 5px; background-color: #3498db;">Change Password</a>
+                    <a href="#" id="logout-link">Logout</a>
+                </div>
+                
+            </div>
+        </header>
+
+        <main>
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon stat-1">
+                        <i class="fas fa-trash" aria-hidden="true"></i>
+                    </div>
+                    <h3 id="stat-total-bins">0</h3>
+                    <p>Total Dustbins</p>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon stat-3">
+                        <i class="fas fa-exclamation-triangle" aria-hidden="true"></i>
+                    </div>
+                    <h3 id="stat-bins-full">0</h3>
+                    <p>Bins Full</p>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon stat-4">
+                        <i class="fas fa-check" aria-hidden="true"></i>
+                    </div>
+                    <h3 id="stat-bins-empty">0</h3>
+                    <p>Bins Empty</p>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon stat-2">
+                        <i class="fas fa-wifi" aria-hidden="true"></i>
+                    </div>
+                    <h3 id="stat-bins-offline">0</h3>
+                    <p>Offline</p>
+                </div>
+            </div>
+
+            <div class="dashboard">
+                <div class="card">
+                    <div class="card-header">
+                        <h2>Current Status</h2>
+                        <i class="fas fa-info-circle" aria-hidden="true"></i>
+                    </div>
+                    <div id="status-overview">
+                         <p style="text-align: center; color: var(--gray);">No data yet...</p>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h2>Location Overview</h2>
+                        <i class="fas fa-map-marked-alt" aria-hidden="true"></i>
+                    </div>
+                    <div id="map"></div>
+                    <p>Showing all real-time device locations.</p>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <h2>Dustbin List</h2>
+                    <i class="fas fa-list" aria-hidden="true"></i>
+                </div>
+                <div class="dustbin-list"></div>
+            </div>
+
+        </main>
+
+        <div class="card add-bin-card">
+            <div class="card-header">
+                <h2>Register a New Device</h2>
+                <i class="fas fa-plus-circle" aria-hidden="true"></i>
+            </div>
+            <form id="add-bin-form" class="auth-form">
+                <div class="form-group">
+                    <label for="bin-name">Dustbin Name (e.g., "Kitchen Bin")</label>
+                    <input type="text" id="bin-name" required>
+                </div>
+                <button type="submit" class="auth-button">Register Device</button>
+            </form>
+        </div>
+        <footer>
+            <p>BinWatch &copy; 2026 | Smart Dustbin Monitoring System</p>
+            <p style="font-size: 0.8rem; margin-top: 5px; color: var(--gray);">Powered by <strong>Ares</strong></p>
+        </footer>
+    </div>
+
+    <script src="js/iot.js"></script>
+</body>
+</html>
