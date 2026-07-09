@@ -11,7 +11,7 @@ function initMap(bin) {
     
     // Check if location is 0,0 (device hasn't reported yet)
     if (bin.lat === 0) {
-        document.getElementById('map').innerHTML = '<p style="text-align:center; padding-top: 50px; color: var(--gray);">Waiting for device\'s first location update...</p>';
+        document.getElementById('map').innerHTML = '<div class="flex items-center justify-center h-full"><p class="text-xs font-mono text-zinc-500 bg-black/40 px-4 py-2 rounded border border-white/10">Waiting for GPS sync...</p></div>';
         return;
     }
 

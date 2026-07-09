@@ -3,89 +3,181 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dustbin Details - BinWatch</title>
-    <link rel="stylesheet" href="css/iot.css">
+    <title>Device Details - BinWatch</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        emerald: {
+                            400: '#34d399',
+                            500: '#10b981',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        mono: ['ui-monospace', 'SFMono-Regular', 'Menlo', 'Monaco', 'Consolas', "Liberation Mono", "Courier New", 'monospace'],
+                    }
+                }
+            }
+        }
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     
-    <link rel="stylesheet" href="css/details.css">
-    
-   <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCdHL76fpx2JfFEP79zNkk_ty9CJn8ftFg&callback=initMap" async defer></script>
-</head>
-<body>
-    <div class="container">
-        <header>
-            <div class="header-content">
-                <div class="logo">
-                    <i class="fas fa-trash-alt" aria-hidden="true"></i>
-                    <h1>BinWatch - Smart Dustbin Monitoring System</h1>
-                </div>
-                <div class="user-info">
-                    <img src="https://ui-avatars.com/api/?name=User&background=0D8ABC&color=fff" alt="User Avatar">
-                    <span id="user-email-display">Loading...</span>
-                    <a href="#" id="logout-link">Logout</a>
-                </div>
-            </div>
-        </header>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCdHL76fpx2JfFEP79zNkk_ty9CJn8ftFg&callback=initMap" async defer></script>
+    <style>
+        body {
+            background-color: #050505;
+            color: white;
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+        }
+        
+        .bg-grid {
+            background-image: linear-gradient(rgba(255,255,255,0.05) 1px, transparent 1px), 
+                              linear-gradient(90deg, rgba(255,255,255,0.05) 1px, transparent 1px);
+            background-size: 72px 72px;
+        }
 
-        <main>
-            <a href="dashboard.html" class="back-link">&larr; Back to Dashboard</a>
-            
-            <h2 id="bin-name-title">Loading...</h2>
-            
-            <div class="details-grid">
-                <div class="card" id="details-map-card">
-                    <div id="map"></div>
+        .glass-nav {
+            background: rgba(9, 9, 11, 0.8);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+        }
+
+        .glass-card {
+            background: rgba(17, 17, 19, 1);
+            border: 1px solid rgba(255, 255, 255, 0.09);
+            border-radius: 1rem;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
+        }
+    </style>
+</head>
+<body class="antialiased selection:bg-emerald-500/30 min-h-screen flex flex-col">
+    <!-- Subtle grid -->
+    <div class="fixed inset-0 bg-grid opacity-[0.3] pointer-events-none z-0"></div>
+    <!-- Radial glow -->
+    <div class="fixed top-0 left-1/4 w-[500px] h-[500px] bg-emerald-500/[0.03] rounded-full blur-3xl pointer-events-none z-0"></div>
+
+    <!-- Navigation -->
+    <nav class="sticky top-0 z-50 glass-nav">
+        <div class="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
+            <div class="flex items-center gap-2.5">
+                <div class="w-7 h-7 rounded-lg bg-emerald-500 flex items-center justify-center">
+                    <i class="fas fa-microchip text-black text-xs"></i>
                 </div>
+                <span class="text-sm font-semibold text-white tracking-tight">BinWatch</span>
+                <span class="ml-2 px-2 py-0.5 rounded text-[10px] font-mono bg-white/10 text-zinc-400">DEVICE INSPECTOR</span>
+            </div>
+
+            <div class="flex items-center gap-4">
+                <div class="hidden md:flex items-center gap-2 mr-4 bg-white/5 rounded-full px-3 py-1.5 border border-white/10">
+                    <img src="https://ui-avatars.com/api/?name=Admin&background=10b981&color=fff&size=24" alt="User Avatar" class="w-5 h-5 rounded-full">
+                    <span id="user-email-display" class="text-xs text-zinc-300 font-mono">Loading...</span>
+                </div>
+                <a href="dashboard.html" class="text-[12px] font-semibold text-white bg-white/10 px-4 py-1.5 rounded-lg border border-white/10 hover:bg-white/20 transition-colors">
+                    <i class="fas fa-arrow-left mr-1 text-[10px]"></i> Dashboard
+                </a>
+                <a href="#" id="logout-link" class="px-4 py-1.5 text-[12px] font-semibold text-zinc-400 hover:text-red-400 transition-colors">
+                    Logout
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="flex-1 relative z-10 w-full max-w-7xl mx-auto px-6 py-8">
+        
+        <!-- Header -->
+        <div class="mb-8 flex items-center justify-between">
+            <div>
+                <a href="dashboard.html" class="text-xs text-zinc-500 hover:text-white transition-colors mb-2 inline-block"><i class="fas fa-arrow-left"></i> Back to Fleet</a>
+                <h1 id="bin-name-title" class="text-3xl font-bold text-white tracking-tight">Loading...</h1>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+            
+            <!-- Left Column: Map -->
+            <div class="glass-card p-0 overflow-hidden flex flex-col relative h-[450px]">
+                <div class="absolute top-0 left-0 right-0 z-10 px-6 py-4 flex items-center justify-between bg-gradient-to-b from-[#111113] to-transparent pointer-events-none">
+                    <h2 class="text-sm font-semibold text-white drop-shadow-md">Device Location</h2>
+                    <i class="fas fa-map-marked-alt text-emerald-400 drop-shadow-md"></i>
+                </div>
+                <div id="map" class="flex-1 w-full bg-zinc-900/50 grayscale-[20%] invert-[90%] hue-rotate-180"></div>
+            </div>
+
+            <!-- Right Column: Info & Telemetry -->
+            <div class="glass-card p-8 flex flex-col justify-between h-[450px]">
                 
-                <!-- ... existing code ... -->
-                <div class="card" id="details-info-card">
-                    <h3>Device Details</h3>
-                    <ul class="info-list">
-<!-- ... existing code ... -->
-                            <i class="fas fa-id-badge" aria-hidden="true"></i>
-                            <strong>Device ID:</strong>
-                            <span id="detail-id">...</span>
-                        </li>
-                        <li>
-                            <i class="fas fa-battery-three-quarters" aria-hidden="true"></i>
-                            <strong>Status:</strong>
-                            <span id="detail-status">...</span>
-                        </li>
-                        <!-- NEW: Added Distance Item -->
-                        <li>
-                            <i class="fas fa-ruler-vertical" aria-hidden="true"></i>
-                            <strong>Distance:</strong>
-                            <span id="detail-distance">...</span>
-                        </li>
-                        <li>
-                            <i class="fas fa-map-marker-alt" aria-hidden="true"></i>
-<!-- ... existing code ... -->
-                            <strong>Coordinates:</strong>
-                            <span id="detail-coords">...</span>
-                        </li>
-                        <li>
-<!-- ... existing code ... -->
-                            <i class="fas fa-clock" aria-hidden="true"></i>
-                            <strong>Last Update:</strong>
-                            <span id="detail-update">...</span>
-<!-- ... existing code ... -->
-                        </li>
-                    </ul>
+                <div>
+                    <h2 class="text-sm font-semibold text-white mb-6 pb-4 border-b border-white/[0.06] flex justify-between items-center">
+                        Telemetry & Diagnostics
+                        <i class="fas fa-satellite-dish text-zinc-500"></i>
+                    </h2>
                     
-                    <button class="auth-button delete-button" id="delete-button">
-                        <i class="fas fa-trash-alt" aria-hidden="true"></i> Delete This Dustbin
+                    <div class="space-y-4">
+                        <div class="flex justify-between items-center p-3 rounded-lg bg-white/[0.02] border border-white/[0.04]">
+                            <div class="flex items-center gap-3">
+                                <i class="fas fa-id-badge text-zinc-500 w-4 text-center"></i>
+                                <span class="text-xs text-zinc-400">Device ID</span>
+                            </div>
+                            <span id="detail-id" class="text-xs font-mono font-semibold text-white">...</span>
+                        </div>
+                        
+                        <div class="flex justify-between items-center p-3 rounded-lg bg-white/[0.02] border border-white/[0.04]">
+                            <div class="flex items-center gap-3">
+                                <i class="fas fa-battery-three-quarters text-emerald-500 w-4 text-center"></i>
+                                <span class="text-xs text-zinc-400">Status</span>
+                            </div>
+                            <span id="detail-status" class="text-xs font-mono font-semibold text-white bg-white/10 px-2 py-0.5 rounded">...</span>
+                        </div>
+
+                        <div class="flex justify-between items-center p-3 rounded-lg bg-white/[0.02] border border-white/[0.04]">
+                            <div class="flex items-center gap-3">
+                                <i class="fas fa-ruler-vertical text-blue-400 w-4 text-center"></i>
+                                <span class="text-xs text-zinc-400">Raw Distance</span>
+                            </div>
+                            <span id="detail-distance" class="text-xs font-mono text-zinc-300">...</span>
+                        </div>
+
+                        <div class="flex justify-between items-center p-3 rounded-lg bg-white/[0.02] border border-white/[0.04]">
+                            <div class="flex items-center gap-3">
+                                <i class="fas fa-map-marker-alt text-amber-500 w-4 text-center"></i>
+                                <span class="text-xs text-zinc-400">Coordinates</span>
+                            </div>
+                            <span id="detail-coords" class="text-xs font-mono text-zinc-300">...</span>
+                        </div>
+
+                        <div class="flex justify-between items-center p-3 rounded-lg bg-white/[0.02] border border-white/[0.04]">
+                            <div class="flex items-center gap-3">
+                                <i class="fas fa-clock text-zinc-500 w-4 text-center"></i>
+                                <span class="text-xs text-zinc-400">Last Sync</span>
+                            </div>
+                            <span id="detail-update" class="text-xs text-zinc-300">...</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="pt-6 mt-6 border-t border-white/[0.06]">
+                    <button id="delete-button" class="w-full py-3 px-4 bg-red-500/10 hover:bg-red-500/20 text-red-500 border border-red-500/20 rounded-lg text-xs font-semibold transition-colors flex items-center justify-center gap-2 group">
+                        <i class="fas fa-trash-alt group-hover:scale-110 transition-transform"></i> Deregister Device
                     </button>
                 </div>
             </div>
-        </main>
 
-        <footer>
-            <p>BinWatch &copy; 2026 | Smart Dustbin Monitoring System</p>
-            <p style="font-size: 0.8rem; margin-top: 5px; color: var(--gray);">Powered by <strong>Ares</strong></p>
-        </footer>
-    </div>
-    
+        </div>
+
+    </main>
+
+    <footer class="border-t border-white/[0.06] py-6 text-center bg-[#050505] relative z-10 mt-auto">
+        <p class="text-xs text-zinc-500 font-mono tracking-wider">BINWATCH v2.0</p>
+        <p class="text-[10px] text-zinc-600 mt-2 uppercase tracking-widest">Powered By Ares</p>
+    </footer>
+
     <script src="js/details.js"></script>
 </body>
 </html>

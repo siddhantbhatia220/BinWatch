@@ -189,26 +189,30 @@ document.addEventListener('DOMContentLoaded', function () {
         let emptyPercent = totalActive === 0 ? 0 : (empty / totalActive) * 100;
         
         document.getElementById('status-overview').innerHTML = `
-            <div class="status-indicator">
-                <div class="status-dot status-empty"></div>
-                <span>Empty (${empty})</span>
-            </div>
-            <div class="progress-bar">
-                <div class="progress-fill progress-empty" style="width: ${emptyPercent}%"></div>
-            </div>
-            <div class="status-indicator">
-                <div class="status-dot status-half"></div>
-                <span>Half Full (${half})</span>
-            </div>
-            <div class="progress-bar">
-                <div class="progress-fill progress-half" style="width: ${halfPercent}%"></div>
-            </div>
-            <div class="status-indicator">
-                <div class="status-dot status-full"></div>
-                <span>Full (${full})</span>
-            </div>
-            <div class="progress-bar">
-                <div class="progress-fill progress-full" style="width: ${fullPercent}%"></div>
+            <div class="space-y-3">
+                <div class="flex items-center justify-between text-xs">
+                    <span class="flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-emerald-500"></span> Empty (${empty})</span>
+                    <span class="font-mono text-zinc-500">${Math.round(emptyPercent)}%</span>
+                </div>
+                <div class="w-full h-1.5 bg-white/10 rounded-full overflow-hidden">
+                    <div class="h-full bg-emerald-500 transition-all duration-1000" style="width: ${emptyPercent}%"></div>
+                </div>
+
+                <div class="flex items-center justify-between text-xs mt-4">
+                    <span class="flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-amber-500"></span> Half Full (${half})</span>
+                    <span class="font-mono text-zinc-500">${Math.round(halfPercent)}%</span>
+                </div>
+                <div class="w-full h-1.5 bg-white/10 rounded-full overflow-hidden">
+                    <div class="h-full bg-amber-500 transition-all duration-1000" style="width: ${halfPercent}%"></div>
+                </div>
+
+                <div class="flex items-center justify-between text-xs mt-4">
+                    <span class="flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-red-500 animate-pulse"></span> Full (${full})</span>
+                    <span class="font-mono text-zinc-500">${Math.round(fullPercent)}%</span>
+                </div>
+                <div class="w-full h-1.5 bg-white/10 rounded-full overflow-hidden">
+                    <div class="h-full bg-red-500 transition-all duration-1000 shadow-[0_0_10px_rgba(239,68,68,0.5)]" style="width: ${fullPercent}%"></div>
+                </div>
             </div>
         `;
     }
@@ -230,14 +234,19 @@ document.addEventListener('DOMContentLoaded', function () {
             item.href = `details.html?id=${bin._id}`; 
 
             let statusHtml = '';
+            let dotColor = 'bg-emerald-400';
+            
             if (bin.status === 'Full') {
-                statusHtml = '<div class="alert-badge">FULL</div>';
+                statusHtml = '<span class="px-2 py-1 bg-red-500/15 border border-red-500/30 text-red-400 rounded text-[10px] font-semibold tracking-wide">FULL</span>';
+                dotColor = 'bg-red-500 animate-pulse';
             } else if (bin.status === 'Half') {
-                statusHtml = '<div class="status-dot status-half"></div>';
+                statusHtml = '<span class="text-amber-400">Half</span>';
+                dotColor = 'bg-amber-400';
             } else if (bin.status === 'Offline') {
-                statusHtml = '<div class="status-dot status-half" style="background-color: var(--gray);"></div>';
+                statusHtml = '<span class="text-zinc-500">Offline</span>';
+                dotColor = 'bg-zinc-600';
             } else {
-                statusHtml = '<div class="status-dot status-empty"></div>';
+                statusHtml = '<span class="text-emerald-400">Empty</span>';
             }
 
             const lastUpdated = new Date(bin.lastUpdated);
@@ -246,21 +255,24 @@ document.addEventListener('DOMContentLoaded', function () {
             
             let locationText = `GPS: ${bin.lat.toFixed(4)}, ${bin.lng.toFixed(4)}`;
             if (bin.lat === 0) {
-                locationText = "Waiting for device's first location update...";
+                locationText = "Waiting for sync...";
             }
 
             item.innerHTML = `
-                <div class="dustbin-info">
-                    <div class="dustbin-icon">
-                        <i class="fas fa-trash" aria-hidden="true"></i>
-                    </div>
-                    <div class="dustbin-details">
-                        <h3>${bin.name} (${bin.dustbinId})</h3>
-                        <p>Last updated: ${minutesAgo} minutes ago | ${locationText}</p>
+                <div class="w-1.5 h-1.5 rounded-full ${dotColor} flex-shrink-0 mt-1"></div>
+                <div class="flex-1 min-w-0 flex items-center justify-between gap-4">
+                    <span class="text-[10px] font-mono text-zinc-400 flex-shrink-0 w-16 truncate">${bin.dustbinId}</span>
+                    <div class="flex-1 min-w-0">
+                        <p class="text-xs text-zinc-200 truncate">${bin.name}</p>
+                        <p class="text-[9px] text-zinc-600 mt-0.5 truncate">${minutesAgo}m ago · ${locationText}</p>
                     </div>
                 </div>
-                ${statusHtml}
+                <div class="text-[10px] font-mono text-right flex-shrink-0 w-16">
+                    ${statusHtml}
+                </div>
             `;
+            
+            item.className = 'flex items-start gap-3 p-3 rounded-lg bg-white/[0.02] border border-white/[0.04] hover:bg-white/[0.04] hover:border-white/[0.1] transition-all cursor-pointer group';
             list.appendChild(item);
         });
     }

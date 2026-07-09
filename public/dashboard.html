@@ -3,115 +3,249 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BinWatch - Smart Dustbin Monitoring System</title>
-    <link rel="stylesheet" href="css/iot.css">
+    <title>Dashboard - BinWatch</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        emerald: {
+                            400: '#34d399',
+                            500: '#10b981',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        mono: ['ui-monospace', 'SFMono-Regular', 'Menlo', 'Monaco', 'Consolas', "Liberation Mono", "Courier New", 'monospace'],
+                    }
+                }
+            }
+        }
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCdHL76fpx2JfFEP79zNkk_ty9CJn8ftFg&callback=initMap" async defer></script>
-   
+    <style>
+        body {
+            background-color: #050505;
+            color: white;
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+        }
+        
+        .bg-grid {
+            background-image: linear-gradient(rgba(255,255,255,0.05) 1px, transparent 1px), 
+                              linear-gradient(90deg, rgba(255,255,255,0.05) 1px, transparent 1px);
+            background-size: 72px 72px;
+        }
+
+        .glass-nav {
+            background: rgba(9, 9, 11, 0.8);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+        }
+
+        .glass-card {
+            background: rgba(17, 17, 19, 1);
+            border: 1px solid rgba(255, 255, 255, 0.09);
+            border-radius: 1rem;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
+        }
+
+        .stat-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 0.75rem;
+            padding: 1.25rem;
+            transition: all 0.3s ease;
+        }
+        .stat-card:hover {
+            background: rgba(255, 255, 255, 0.05);
+            border-color: rgba(255, 255, 255, 0.1);
+        }
+    </style>
 </head>
-<body>
-    <div class="container">
-        <header>
-            <div class="header-content">
-                <div class="logo">
-                    <i class="fas fa-trash-alt" aria-hidden="true"></i>
-                    <h1>BinWatch - Smart Dustbin Monitoring System </h1>
-                </div>
-                
-                <div class="user-info">
-                    <img src="https://ui-avatars.com/api/?name=User&background=0D8ABC&color=fff" alt="User Avatar">
-                    <span id="user-email-display">Loading...</span>
-                    <a href="change_password.html" id="change-password-link" style="color: white; text-decoration: none; font-size: 0.9rem; margin-left: 15px; padding: 5px 10px; border: 1px solid white; border-radius: 5px; background-color: #3498db;">Change Password</a>
-                    <a href="#" id="logout-link">Logout</a>
-                </div>
-                
-            </div>
-        </header>
+<body class="antialiased selection:bg-emerald-500/30 min-h-screen flex flex-col">
+    <!-- Subtle grid -->
+    <div class="fixed inset-0 bg-grid opacity-[0.3] pointer-events-none z-0"></div>
+    <!-- Radial glow -->
+    <div class="fixed top-0 right-1/4 w-[500px] h-[500px] bg-emerald-500/[0.03] rounded-full blur-3xl pointer-events-none z-0"></div>
 
-        <main>
-            <div class="stats-grid">
-                <div class="stat-card">
-                    <div class="stat-icon stat-1">
-                        <i class="fas fa-trash" aria-hidden="true"></i>
-                    </div>
-                    <h3 id="stat-total-bins">0</h3>
-                    <p>Total Dustbins</p>
+    <!-- Navigation -->
+    <nav class="sticky top-0 z-50 glass-nav">
+        <div class="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
+            <div class="flex items-center gap-2.5">
+                <div class="w-7 h-7 rounded-lg bg-emerald-500 flex items-center justify-center">
+                    <i class="fas fa-trash-alt text-black text-xs"></i>
                 </div>
-                <div class="stat-card">
-                    <div class="stat-icon stat-3">
-                        <i class="fas fa-exclamation-triangle" aria-hidden="true"></i>
-                    </div>
-                    <h3 id="stat-bins-full">0</h3>
-                    <p>Bins Full</p>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-icon stat-4">
-                        <i class="fas fa-check" aria-hidden="true"></i>
-                    </div>
-                    <h3 id="stat-bins-empty">0</h3>
-                    <p>Bins Empty</p>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-icon stat-2">
-                        <i class="fas fa-wifi" aria-hidden="true"></i>
-                    </div>
-                    <h3 id="stat-bins-offline">0</h3>
-                    <p>Offline</p>
-                </div>
+                <span class="text-sm font-semibold text-white tracking-tight">BinWatch</span>
+                <span class="ml-2 px-2 py-0.5 rounded text-[10px] font-mono bg-white/10 text-zinc-400">ADMIN DASHBOARD</span>
             </div>
 
-            <div class="dashboard">
-                <div class="card">
-                    <div class="card-header">
-                        <h2>Current Status</h2>
-                        <i class="fas fa-info-circle" aria-hidden="true"></i>
-                    </div>
-                    <div id="status-overview">
-                         <p style="text-align: center; color: var(--gray);">No data yet...</p>
-                    </div>
+            <div class="flex items-center gap-4">
+                <div class="hidden md:flex items-center gap-2 mr-4 bg-white/5 rounded-full px-3 py-1.5 border border-white/10">
+                    <img src="https://ui-avatars.com/api/?name=Admin&background=10b981&color=fff&size=24" alt="User Avatar" class="w-5 h-5 rounded-full">
+                    <span id="user-email-display" class="text-xs text-zinc-300 font-mono">Loading...</span>
                 </div>
+                <a href="change_password.html" id="change-password-link" class="text-[12px] text-zinc-400 hover:text-white transition-colors">
+                    <i class="fas fa-key mr-1"></i> Security
+                </a>
+                <a href="#" id="logout-link" class="px-4 py-1.5 text-[12px] font-semibold bg-white/10 text-white rounded-lg hover:bg-red-500/20 hover:text-red-400 transition-colors border border-white/10 hover:border-red-500/30">
+                    Logout
+                </a>
+            </div>
+        </div>
+    </nav>
 
-                <div class="card">
-                    <div class="card-header">
-                        <h2>Location Overview</h2>
-                        <i class="fas fa-map-marked-alt" aria-hidden="true"></i>
-                    </div>
-                    <div id="map"></div>
-                    <p>Showing all real-time device locations.</p>
+    <!-- Main Content -->
+    <main class="flex-1 relative z-10 w-full max-w-7xl mx-auto px-6 py-8">
+        
+        <!-- Header -->
+        <div class="mb-8 flex items-center justify-between">
+            <div>
+                <h1 class="text-2xl font-bold text-white tracking-tight">Fleet Overview</h1>
+                <p class="text-sm text-zinc-400 mt-1">Real-time status of all registered dustbins</p>
+            </div>
+            <div class="flex items-center gap-2 px-3 py-1.5 bg-emerald-500/10 border border-emerald-500/20 rounded-full">
+                <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+                <span class="text-[10px] font-mono text-emerald-400 uppercase tracking-widest">System Live</span>
+            </div>
+        </div>
+
+        <!-- Stats Grid -->
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+            <div class="stat-card">
+                <div class="flex items-center justify-between mb-2">
+                    <p class="text-xs text-zinc-500 uppercase tracking-wider font-semibold">Total Bins</p>
+                    <i class="fas fa-trash text-zinc-600"></i>
+                </div>
+                <h3 id="stat-total-bins" class="text-3xl font-bold font-mono text-white">0</h3>
+            </div>
+            
+            <div class="stat-card">
+                <div class="flex items-center justify-between mb-2">
+                    <p class="text-xs text-zinc-500 uppercase tracking-wider font-semibold">Need Collection</p>
+                    <i class="fas fa-exclamation-triangle text-red-500/50"></i>
+                </div>
+                <h3 id="stat-bins-full" class="text-3xl font-bold font-mono text-red-400">0</h3>
+            </div>
+
+            <div class="stat-card">
+                <div class="flex items-center justify-between mb-2">
+                    <p class="text-xs text-zinc-500 uppercase tracking-wider font-semibold">Available</p>
+                    <i class="fas fa-check text-emerald-500/50"></i>
+                </div>
+                <h3 id="stat-bins-empty" class="text-3xl font-bold font-mono text-emerald-400">0</h3>
+            </div>
+
+            <div class="stat-card">
+                <div class="flex items-center justify-between mb-2">
+                    <p class="text-xs text-zinc-500 uppercase tracking-wider font-semibold">Offline</p>
+                    <i class="fas fa-wifi text-zinc-600/50"></i>
+                </div>
+                <h3 id="stat-bins-offline" class="text-3xl font-bold font-mono text-zinc-500">0</h3>
+            </div>
+        </div>
+
+        <!-- Dashboard Split -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+            
+            <!-- Left Column: Current Status (Fill Bars) -->
+            <div class="lg:col-span-1 glass-card p-6 flex flex-col">
+                <div class="flex items-center justify-between mb-6">
+                    <h2 class="text-sm font-semibold text-white">Network Status</h2>
+                    <i class="fas fa-chart-pie text-zinc-500"></i>
+                </div>
+                <!-- Dynamic Content from iot.js -->
+                <div id="status-overview" class="flex-1 flex flex-col justify-center space-y-4">
+                    <p class="text-center text-xs text-zinc-600 font-mono">No data yet...</p>
                 </div>
             </div>
 
-            <div class="card">
-                <div class="card-header">
-                    <h2>Dustbin List</h2>
-                    <i class="fas fa-list" aria-hidden="true"></i>
+            <!-- Right Column: Map -->
+            <div class="lg:col-span-2 glass-card p-0 overflow-hidden flex flex-col relative h-[400px]">
+                <div class="absolute top-0 left-0 right-0 z-10 px-6 py-4 flex items-center justify-between bg-gradient-to-b from-[#111113] to-transparent pointer-events-none">
+                    <h2 class="text-sm font-semibold text-white drop-shadow-md">Live GPS Tracking</h2>
+                    <i class="fas fa-map-marked-alt text-zinc-400 drop-shadow-md"></i>
                 </div>
-                <div class="dustbin-list"></div>
+                <div id="map" class="flex-1 w-full bg-zinc-900/50 grayscale-[20%] invert-[90%] hue-rotate-180"></div>
             </div>
 
-        </main>
+        </div>
 
-        <div class="card add-bin-card">
-            <div class="card-header">
-                <h2>Register a New Device</h2>
-                <i class="fas fa-plus-circle" aria-hidden="true"></i>
+        <!-- Dustbin List -->
+        <div class="glass-card p-6 mb-8">
+            <div class="flex items-center justify-between mb-6 border-b border-white/[0.06] pb-4">
+                <h2 class="text-sm font-semibold text-white">Live Feed (All Devices)</h2>
+                <i class="fas fa-list text-zinc-500"></i>
             </div>
-            <form id="add-bin-form" class="auth-form">
-                <div class="form-group">
-                    <label for="bin-name">Dustbin Name (e.g., "Kitchen Bin")</label>
-                    <input type="text" id="bin-name" required>
+            
+            <!-- Headers for list -->
+            <div class="grid grid-cols-[auto_1fr_auto] gap-4 px-4 pb-2 text-[10px] font-mono text-zinc-500 uppercase tracking-widest">
+                <div class="w-16">ID</div>
+                <div>Location & Last Sync</div>
+                <div class="text-right">Status</div>
+            </div>
+
+            <!-- Dynamic Content from iot.js -->
+            <div class="dustbin-list space-y-2 max-h-[400px] overflow-y-auto pr-2 custom-scrollbar">
+                <!-- Items injected here -->
+            </div>
+        </div>
+
+        <!-- Register Device -->
+        <div class="glass-card p-6 mb-8 max-w-xl">
+            <div class="flex items-center gap-3 mb-6">
+                <div class="w-8 h-8 rounded-full bg-blue-500/10 border border-blue-500/20 flex items-center justify-center">
+                    <i class="fas fa-plus text-blue-400 text-xs"></i>
                 </div>
-                <button type="submit" class="auth-button">Register Device</button>
+                <div>
+                    <h2 class="text-sm font-semibold text-white">Register a New Device</h2>
+                    <p class="text-xs text-zinc-400">Generate a unique ID for a new hardware module</p>
+                </div>
+            </div>
+            
+            <form id="add-bin-form" class="space-y-4">
+                <div>
+                    <label for="bin-name" class="block text-xs font-medium text-zinc-400 mb-1.5">Dustbin Location / Name</label>
+                    <input type="text" id="bin-name" required 
+                           class="w-full px-4 py-2.5 bg-black/40 border border-white/10 rounded-lg focus:outline-none focus:border-blue-500/50 focus:ring-1 focus:ring-blue-500/50 text-white placeholder-zinc-600 transition-all text-sm" 
+                           placeholder="e.g., Cafeteria Zone B">
+                </div>
+                <button type="submit" 
+                        class="px-5 py-2.5 bg-white text-black font-semibold rounded-lg hover:bg-zinc-200 transition-colors text-xs flex items-center gap-2">
+                    <i class="fas fa-microchip"></i> Register Device
+                </button>
             </form>
         </div>
-        <footer>
-            <p>BinWatch &copy; 2026 | Smart Dustbin Monitoring System</p>
-            <p style="font-size: 0.8rem; margin-top: 5px; color: var(--gray);">Powered by <strong>Ares</strong></p>
-        </footer>
-    </div>
+
+    </main>
+
+    <footer class="border-t border-white/[0.06] py-6 text-center bg-[#050505] relative z-10 mt-auto">
+        <p class="text-xs text-zinc-500 font-mono tracking-wider">BINWATCH v2.0</p>
+        <p class="text-[10px] text-zinc-600 mt-2 uppercase tracking-widest">Powered By Ares</p>
+    </footer>
 
     <script src="js/iot.js"></script>
+    
+    <!-- Custom Scrollbar styling for list -->
+    <style>
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+    </style>
 </body>
 </html>
