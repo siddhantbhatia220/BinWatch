@@ -26,7 +26,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     localStorage.setItem('authToken', data.token); 
                     
                     // Redirect to the main dashboard
-                    window.location.href = 'index.html'; 
+                    window.location.href = 'dashboard.html'; 
                 } else {
                     const data = await response.json();
                     alert(`Login failed: ${data.message}`);

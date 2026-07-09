@@ -39,7 +39,7 @@ document.addEventListener('DOMContentLoaded', function () {
     
     if (!dustbinId) {
         alert('No dustbin ID provided.');
-        window.location.href = 'index.html';
+        window.location.href = 'dashboard.html';
         return;
     }
     

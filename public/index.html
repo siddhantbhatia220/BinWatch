@@ -1,117 +1,288 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="scroll-smooth">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BinWatch - Smart Dustbin Monitoring System</title>
-    <link rel="stylesheet" href="css/iot.css">
+    <title>BinWatch - Smart Waste Management</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        emerald: {
+                            400: '#34d399',
+                            500: '#10b981',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        mono: ['ui-monospace', 'SFMono-Regular', 'Menlo', 'Monaco', 'Consolas', "Liberation Mono", "Courier New", 'monospace'],
+                    }
+                }
+            }
+        }
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    
-    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCdHL76fpx2JfFEP79zNkk_ty9CJn8ftFg&callback=initMap" async defer></script>
-   
+    <style>
+        body {
+            background-color: #050505;
+            color: white;
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+        }
+        
+        /* Grid background pattern */
+        .bg-grid {
+            background-image: linear-gradient(rgba(255,255,255,0.05) 1px, transparent 1px), 
+                              linear-gradient(90deg, rgba(255,255,255,0.05) 1px, transparent 1px);
+            background-size: 72px 72px;
+        }
+
+        .glass-nav {
+            background: rgba(9, 9, 11, 0.8);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+        }
+
+        .glass-card {
+            background: rgba(17, 17, 19, 1);
+            border: 1px solid rgba(255, 255, 255, 0.09);
+            border-radius: 1rem;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
+        }
+
+        .stat-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 0.75rem;
+            padding: 0.75rem;
+        }
+    </style>
 </head>
-<body>
-    <div class="container">
-        <header>
-            <div class="header-content">
-                <div class="logo">
-                    <i class="fas fa-trash-alt" aria-hidden="true"></i>
-                    <h1>BinWatch - Smart Dustbin Monitoring System </h1>
-                </div>
-                
-                <div class="user-info">
-                    <img src="https://ui-avatars.com/api/?name=User&background=0D8ABC&color=fff" alt="User Avatar">
-                    <span id="user-email-display">Loading...</span>
-                    <a href="change_password.html" id="change-password-link" style="color: white; text-decoration: none; font-size: 0.9rem; margin-left: 15px; padding: 5px 10px; border: 1px solid white; border-radius: 5px; background-color: #3498db;">Change Password</a>
-                    <a href="#" id="logout-link">Logout</a>
-                </div>
-                
-            </div>
-        </header>
+<body class="antialiased selection:bg-emerald-500/30">
 
-        <main>
-            <div class="stats-grid">
-                <div class="stat-card">
-                    <div class="stat-icon stat-1">
-                        <i class="fas fa-trash" aria-hidden="true"></i>
-                    </div>
-                    <h3 id="stat-total-bins">0</h3>
-                    <p>Total Dustbins</p>
+    <!-- Navigation -->
+    <nav class="fixed top-0 left-0 right-0 z-50 glass-nav transition-all duration-300">
+        <div class="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
+            <div class="flex items-center gap-2.5">
+                <div class="w-7 h-7 rounded-lg bg-emerald-500 flex items-center justify-center">
+                    <i class="fas fa-trash-alt text-black text-xs"></i>
                 </div>
-                <div class="stat-card">
-                    <div class="stat-icon stat-3">
-                        <i class="fas fa-exclamation-triangle" aria-hidden="true"></i>
-                    </div>
-                    <h3 id="stat-bins-full">0</h3>
-                    <p>Bins Full</p>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-icon stat-4">
-                        <i class="fas fa-check" aria-hidden="true"></i>
-                    </div>
-                    <h3 id="stat-bins-empty">0</h3>
-                    <p>Bins Empty</p>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-icon stat-2">
-                        <i class="fas fa-wifi" aria-hidden="true"></i>
-                    </div>
-                    <h3 id="stat-bins-offline">0</h3>
-                    <p>Offline</p>
-                </div>
+                <span class="text-sm font-semibold text-white tracking-tight">BinWatch</span>
             </div>
 
-            <div class="dashboard">
-                <div class="card">
-                    <div class="card-header">
-                        <h2>Current Status</h2>
-                        <i class="fas fa-info-circle" aria-hidden="true"></i>
-                    </div>
-                    <div id="status-overview">
-                         <p style="text-align: center; color: var(--gray);">No data yet...</p>
-                    </div>
-                </div>
-
-                <div class="card">
-                    <div class="card-header">
-                        <h2>Location Overview</h2>
-                        <i class="fas fa-map-marked-alt" aria-hidden="true"></i>
-                    </div>
-                    <div id="map"></div>
-                    <p>Showing all real-time device locations.</p>
-                </div>
+            <div class="hidden md:flex items-center gap-8">
+                <a href="#features" class="text-[13px] text-zinc-400 hover:text-white transition-colors">Features</a>
+                <a href="#technology" class="text-[13px] text-zinc-400 hover:text-white transition-colors">Technology</a>
+                <a href="#dashboard" class="text-[13px] text-zinc-400 hover:text-white transition-colors">Dashboard</a>
             </div>
 
-            <div class="card">
-                <div class="card-header">
-                    <h2>Dustbin List</h2>
-                    <i class="fas fa-list" aria-hidden="true"></i>
-                </div>
-                <div class="dustbin-list"></div>
+            <div class="hidden md:flex items-center gap-4">
+                <a href="https://github.com/siddhantbhatia220/BinWatch" target="_blank" class="flex items-center gap-1.5 text-[13px] text-zinc-400 hover:text-white transition-colors">
+                    <i class="fab fa-github"></i>
+                    <span>GitHub</span>
+                </a>
+                <a href="login.html" class="px-4 py-2 text-[13px] font-semibold bg-white text-black rounded-lg hover:bg-zinc-200 transition-colors">
+                    Login
+                </a>
             </div>
-
-        </main>
-
-        <div class="card add-bin-card">
-            <div class="card-header">
-                <h2>Register a New Device</h2>
-                <i class="fas fa-plus-circle" aria-hidden="true"></i>
-            </div>
-            <form id="add-bin-form" class="auth-form">
-                <div class="form-group">
-                    <label for="bin-name">Dustbin Name (e.g., "Kitchen Bin")</label>
-                    <input type="text" id="bin-name" required>
-                </div>
-                <button type="submit" class="auth-button">Register Device</button>
-            </form>
         </div>
-        <footer>
-            <p>BinWatch &copy; 2026 | Smart Dustbin Monitoring System</p>
-            <p style="font-size: 0.8rem; margin-top: 5px; color: var(--gray);">Powered by <strong>Ares</strong></p>
-        </footer>
-    </div>
+    </nav>
 
-    <script src="js/iot.js"></script>
+    <!-- Hero Section -->
+    <section class="min-h-screen pt-32 pb-24 px-6 relative overflow-hidden flex items-center">
+        <!-- Subtle grid -->
+        <div class="absolute inset-0 bg-grid opacity-[0.5] pointer-events-none"></div>
+        
+        <!-- Radial glow -->
+        <div class="absolute top-1/2 left-1/3 -translate-y-1/2 w-[600px] h-[600px] bg-emerald-500/[0.04] rounded-full blur-3xl pointer-events-none"></div>
+
+        <div class="max-w-7xl mx-auto w-full relative z-10">
+            <div class="grid grid-cols-1 xl:grid-cols-[1fr_1.1fr] gap-16 xl:gap-28 items-center">
+                
+                <!-- Left Content -->
+                <div class="space-y-8">
+                    <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-emerald-500/25 bg-emerald-500/[0.06] text-emerald-400 text-[11px] font-mono">
+                        <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse inline-block"></span>
+                        v1.0 · Live IoT Monitoring Active
+                    </div>
+
+                    <h1 class="text-5xl xl:text-[64px] font-bold text-white tracking-tight leading-[1.1]">
+                        Smart Waste<br />
+                        Management,<br />
+                        <span class="text-zinc-500">Powered by</span><br />
+                        <span class="text-emerald-400">Real-Time</span><br />
+                        <span class="text-zinc-500">Intelligence.</span>
+                    </h1>
+
+                    <p class="text-[17px] text-zinc-400 leading-relaxed max-w-[440px]">
+                        Connect IoT-enabled dustbins to a live cloud dashboard. Monitor fill levels, GPS coordinates, and operational status — across your entire campus or city, from one place.
+                    </p>
+
+                    <div class="flex flex-wrap gap-4">
+                        <a href="login.html" class="flex items-center gap-2 px-6 py-3.5 bg-white text-black text-[14px] font-semibold rounded-xl hover:bg-zinc-200 transition-all hover:shadow-[0_0_20px_rgba(255,255,255,0.15)] group">
+                            Go to Dashboard
+                            <i class="fas fa-arrow-right group-hover:translate-x-1 transition-transform"></i>
+                        </a>
+                        <a href="https://github.com/siddhantbhatia220/BinWatch" target="_blank" class="flex items-center gap-2 px-6 py-3.5 border border-white/[0.12] text-zinc-300 text-[14px] font-medium rounded-xl hover:border-white/30 hover:bg-white/[0.02] hover:text-white transition-all">
+                            <i class="fab fa-github text-lg"></i>
+                            View on GitHub
+                        </a>
+                    </div>
+
+                    <div class="flex items-center gap-10 pt-4">
+                        <div>
+                            <p class="text-2xl font-bold font-mono text-white">100%</p>
+                            <p class="text-[11px] text-zinc-500 mt-0.5 uppercase tracking-wider">Real-time</p>
+                        </div>
+                        <div>
+                            <p class="text-2xl font-bold font-mono text-white">&lt;2s</p>
+                            <p class="text-[11px] text-zinc-500 mt-0.5 uppercase tracking-wider">Response time</p>
+                        </div>
+                        <div>
+                            <p class="text-2xl font-bold font-mono text-white">24/7</p>
+                            <p class="text-[11px] text-zinc-500 mt-0.5 uppercase tracking-wider">Monitoring</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Content (Mock Dashboard) -->
+                <div class="relative hidden lg:block xl:pl-10">
+                    <div class="glass-card overflow-hidden w-full relative z-20">
+                        <!-- Chrome Header -->
+                        <div class="flex items-center px-4 py-3 border-b border-white/[0.06] bg-[#0d0d0f]">
+                            <div class="flex items-center gap-1.5">
+                                <div class="w-2.5 h-2.5 rounded-full bg-[#ff5f57]"></div>
+                                <div class="w-2.5 h-2.5 rounded-full bg-[#febc2e]"></div>
+                                <div class="w-2.5 h-2.5 rounded-full bg-[#28c840]"></div>
+                            </div>
+                            <span class="ml-4 text-[10px] font-mono text-zinc-500 flex-1">BinWatch — Admin Dashboard</span>
+                            <div class="flex items-center gap-1.5">
+                                <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse inline-block"></span>
+                                <span class="text-[10px] font-mono text-emerald-400">LIVE</span>
+                            </div>
+                        </div>
+
+                        <!-- Dashboard Body -->
+                        <div class="flex h-[400px]">
+                            <!-- Sidebar -->
+                            <div class="w-36 border-r border-white/[0.05] p-3 flex-shrink-0 flex flex-col bg-[#111113]">
+                                <div class="space-y-1 flex-1">
+                                    <div class="flex items-center gap-2 px-2.5 py-2 rounded-md text-[10px] bg-white/[0.08] text-white cursor-pointer"><i class="fas fa-chart-line w-3"></i> Overview</div>
+                                    <div class="flex items-center gap-2 px-2.5 py-2 rounded-md text-[10px] text-zinc-500 hover:text-zinc-300 cursor-pointer"><i class="fas fa-trash w-3"></i> Dustbins</div>
+                                    <div class="flex items-center gap-2 px-2.5 py-2 rounded-md text-[10px] text-zinc-500 hover:text-zinc-300 cursor-pointer"><i class="fas fa-map-marker-alt w-3"></i> Map</div>
+                                    <div class="flex items-center gap-2 px-2.5 py-2 rounded-md text-[10px] text-zinc-500 hover:text-zinc-300 cursor-pointer"><i class="fas fa-bell w-3"></i> Alerts</div>
+                                </div>
+                                <div class="pt-3 border-t border-white/[0.05]">
+                                    <div class="flex items-center gap-2 px-2">
+                                        <div class="w-5 h-5 rounded-full bg-emerald-500/20 border border-emerald-500/30 flex items-center justify-center"><span class="text-[8px] font-bold text-emerald-400">A</span></div>
+                                        <div>
+                                            <p class="text-[9px] text-zinc-300">Admin</p>
+                                            <p class="text-[8px] text-zinc-600">admin@city.gov</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Content Area -->
+                            <div class="flex-1 p-4 bg-[#111113] overflow-hidden flex flex-col gap-4">
+                                <!-- Stats Row -->
+                                <div class="grid grid-cols-3 gap-3">
+                                    <div class="stat-card">
+                                        <p class="text-[9px] text-zinc-500 mb-1">Total Bins</p>
+                                        <p class="text-xl font-bold font-mono text-white">24</p>
+                                        <p class="text-[9px] text-zinc-600 mt-1">+2 this week</p>
+                                    </div>
+                                    <div class="stat-card">
+                                        <p class="text-[9px] text-zinc-500 mb-1">Need Collection</p>
+                                        <p class="text-xl font-bold font-mono text-red-400">4</p>
+                                        <p class="text-[9px] text-zinc-600 mt-1">>80% fill level</p>
+                                    </div>
+                                    <div class="stat-card">
+                                        <p class="text-[9px] text-zinc-500 mb-1">Online Now</p>
+                                        <p class="text-xl font-bold font-mono text-emerald-400">22</p>
+                                        <p class="text-[9px] text-zinc-600 mt-1">91.6% uptime</p>
+                                    </div>
+                                </div>
+
+                                <!-- Bin List Mockup -->
+                                <div class="flex-1 space-y-2 mt-2">
+                                    <p class="text-[9px] text-zinc-500 mb-2 font-mono uppercase tracking-widest">Live Feed</p>
+                                    
+                                    <div class="flex items-center gap-3 px-3 py-2 rounded-lg bg-white/[0.02] border border-white/[0.04]">
+                                        <div class="w-1.5 h-1.5 rounded-full bg-emerald-400"></div>
+                                        <span class="text-[10px] font-mono text-zinc-400 w-16">DBN-001</span>
+                                        <span class="text-[10px] text-zinc-300 flex-1">Main Entrance</span>
+                                        <div class="w-16 h-1.5 bg-white/[0.07] rounded-full overflow-hidden"><div class="h-full rounded-full bg-red-500" style="width: 91%"></div></div>
+                                        <span class="text-[10px] font-mono text-red-400 w-8 text-right">91%</span>
+                                    </div>
+
+                                    <div class="flex items-center gap-3 px-3 py-2 rounded-lg bg-white/[0.02] border border-white/[0.04]">
+                                        <div class="w-1.5 h-1.5 rounded-full bg-emerald-400"></div>
+                                        <span class="text-[10px] font-mono text-zinc-400 w-16">DBN-002</span>
+                                        <span class="text-[10px] text-zinc-300 flex-1">Cafeteria East</span>
+                                        <div class="w-16 h-1.5 bg-white/[0.07] rounded-full overflow-hidden"><div class="h-full rounded-full bg-amber-500" style="width: 63%"></div></div>
+                                        <span class="text-[10px] font-mono text-amber-400 w-8 text-right">63%</span>
+                                    </div>
+
+                                    <div class="flex items-center gap-3 px-3 py-2 rounded-lg bg-white/[0.02] border border-white/[0.04]">
+                                        <div class="w-1.5 h-1.5 rounded-full bg-emerald-400"></div>
+                                        <span class="text-[10px] font-mono text-zinc-400 w-16">DBN-003</span>
+                                        <span class="text-[10px] text-zinc-300 flex-1">Library Block</span>
+                                        <div class="w-16 h-1.5 bg-white/[0.07] rounded-full overflow-hidden"><div class="h-full rounded-full bg-emerald-500" style="width: 18%"></div></div>
+                                        <span class="text-[10px] font-mono text-emerald-400 w-8 text-right">18%</span>
+                                    </div>
+
+                                    <div class="flex items-center gap-3 px-3 py-2 rounded-lg bg-white/[0.02] border border-white/[0.04] opacity-50">
+                                        <div class="w-1.5 h-1.5 rounded-full bg-zinc-600"></div>
+                                        <span class="text-[10px] font-mono text-zinc-500 w-16">DBN-004</span>
+                                        <span class="text-[10px] text-zinc-500 flex-1">Sports Complex</span>
+                                        <div class="w-16 h-1.5 bg-white/[0.07] rounded-full overflow-hidden"><div class="h-full rounded-full bg-zinc-700" style="width: 0%"></div></div>
+                                        <span class="text-[10px] font-mono text-zinc-500 w-8 text-right">—</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Floating Tech Cards -->
+                    <div class="absolute -left-12 top-12 bg-[#18181b] border border-white/[0.1] rounded-xl p-3 shadow-2xl shadow-black/80 z-30">
+                        <i class="fas fa-microchip text-blue-400 mb-2"></i>
+                        <p class="text-[10px] font-mono font-semibold text-white">ESP8266</p>
+                        <p class="text-[9px] text-zinc-500">80MHz · WiFi</p>
+                    </div>
+                    <div class="absolute -right-8 bottom-16 bg-[#18181b] border border-white/[0.1] rounded-xl p-3 shadow-2xl shadow-black/80 z-30">
+                        <i class="fas fa-broadcast-tower text-emerald-400 mb-2"></i>
+                        <p class="text-[10px] font-mono font-semibold text-white">HC-SR04</p>
+                        <p class="text-[9px] text-zinc-500">Ultrasonic</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Trusted By -->
+    <section class="border-t border-white/[0.06] py-14 px-6 bg-[#09090b]">
+        <div class="max-w-7xl mx-auto">
+            <p class="text-center text-[10px] font-mono text-zinc-600 tracking-[0.2em] uppercase mb-8">
+                Designed for scale and enterprise IoT deployments
+            </p>
+            <div class="flex flex-wrap justify-center gap-x-12 gap-y-6 opacity-60">
+                <span class="text-[13px] font-medium text-zinc-400 hover:text-white transition-colors cursor-default tracking-wide"><i class="fas fa-city mr-2"></i>Smart Cities</span>
+                <span class="text-[13px] font-medium text-zinc-400 hover:text-white transition-colors cursor-default tracking-wide"><i class="fas fa-university mr-2"></i>Universities</span>
+                <span class="text-[13px] font-medium text-zinc-400 hover:text-white transition-colors cursor-default tracking-wide"><i class="fas fa-building mr-2"></i>Corporate Campuses</span>
+                <span class="text-[13px] font-medium text-zinc-400 hover:text-white transition-colors cursor-default tracking-wide"><i class="fas fa-hospital mr-2"></i>Hospitals</span>
+            </div>
+        </div>
+    </section>
+
+    <footer class="border-t border-white/[0.06] py-8 text-center bg-[#050505]">
+        <p class="text-sm text-zinc-500">BinWatch &copy; 2026 | Open Source IoT Framework</p>
+        <p class="text-xs text-zinc-600 mt-2">Designed in Figma. Built with Express & C++.</p>
+    </footer>
+
 </body>
 </html>
