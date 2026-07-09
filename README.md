@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="assets/logo.png" alt="BinWatch Logo" width="200" height="200" />
+  <img src="assets/logo.jpg" alt="BinWatch Logo" width="200" height="200" />
   
   # BinWatch – A Smart Dustbin Monitoring System
 
@@ -8,9 +8,9 @@
   <p>A complete Hardware + Software + IoT ecosystem designed to optimize waste management through real-time monitoring, GPS tracking, and automated alerts.</p>
 
   [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-  [![GitHub Stars](https://img.shields.io/github/stars/yourusername/binwatch?style=social)](https://github.com/yourusername/binwatch)
-  [![Issues](https://img.shields.io/github/issues/yourusername/binwatch)](https://github.com/yourusername/binwatch/issues)
-  [![Forks](https://img.shields.io/github/forks/yourusername/binwatch)](https://github.com/yourusername/binwatch/network/members)
+  [![GitHub Stars](https://img.shields.io/github/stars/siddhantbhatia220/BinWatch?style=social)](https://github.com/siddhantbhatia220/BinWatch)
+  [![Issues](https://img.shields.io/github/issues/siddhantbhatia220/BinWatch)](https://github.com/siddhantbhatia220/BinWatch/issues)
+  [![Forks](https://img.shields.io/github/forks/siddhantbhatia220/BinWatch)](https://github.com/siddhantbhatia220/BinWatch/network/members)
   [![Node.js](https://img.shields.io/badge/Node.js-v16+-green.svg?logo=node.js)](https://nodejs.org/)
   [![MongoDB](https://img.shields.io/badge/MongoDB-Atlas-47A248.svg?logo=mongodb)](https://www.mongodb.com/)
   [![Express.js](https://img.shields.io/badge/Express.js-Backend-000000.svg?logo=express)](https://expressjs.com/)
@@ -26,7 +26,7 @@
 
 | Dashboard | Login | Mobile |
 |:---:|:---:|:---:|
-| <img src="assets/dashboard.png" width="300" /> | <img src="assets/login.png" width="300" /> | <img src="assets/mobile.png" width="300" /> |
+| <img src="assets/dashboard.jpg" width="300" /> | <img src="assets/login.jpg" width="300" /> | <img src="assets/mobile.jpg" width="300" /> |
 
 ---
 
