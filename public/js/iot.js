@@ -144,21 +144,45 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
-    // --- 3. Real-Time WebSocket Listener (Dashboard Only) ---
+    let pollInterval = null;
+
+    function startPolling() {
+        if (!pollInterval) {
+            console.log('Using HTTP polling for live updates.');
+            pollInterval = setInterval(fetchDustbinData, 5000);
+        }
+    }
+
+    // --- 3. Real-Time WebSocket Listener with Polling Fallback (Dashboard Only) ---
     function connectWebSocket() {
-        const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
-        const ws = new WebSocket(`${protocol}//${window.location.host}?token=${token}`);
-        ws.onopen = () => console.log('Connected to real-time update server');
-        ws.onmessage = (event) => {
-            console.log('Received real-time update from server');
-            const dustbins = JSON.parse(event.data);
-            updateDashboard(dustbins); // This one function updates everything
-        };
-        ws.onclose = () => {
-            console.log('Disconnected from real-time server. Attempting to reconnect...');
-            setTimeout(connectWebSocket, 3000);
-        };
-        ws.onerror = (error) => console.error('WebSocket Error:', error);
+        try {
+            const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+            const ws = new WebSocket(`${protocol}//${window.location.host}?token=${token}`);
+            
+            ws.onopen = () => {
+                console.log('Connected to real-time update server');
+                if (pollInterval) {
+                    clearInterval(pollInterval);
+                    pollInterval = null;
+                }
+            };
+            ws.onmessage = (event) => {
+                console.log('Received real-time update from server');
+                const dustbins = JSON.parse(event.data);
+                updateDashboard(dustbins);
+            };
+            ws.onclose = () => {
+                console.log('Disconnected from real-time server. Falling back to HTTP polling.');
+                startPolling();
+            };
+            ws.onerror = (error) => {
+                console.warn('WebSocket error, falling back to polling.', error);
+                startPolling();
+            };
+        } catch (e) {
+            console.warn('WebSocket connection failed, starting HTTP polling.', e);
+            startPolling();
+        }
     }
 
     // --- 4. Page Update Functions (Dashboard Only) ---
